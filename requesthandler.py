@@ -60,7 +60,49 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             self.end_headers()
             with open("./articles/files/" + splitted[2], "rb") as article_file:
                 self.wfile.write(article_file.read())    
-            
+        
+        else:
+            self.send_response(401)
+            self.end_headers()
+
+    def do_POST(self):
+        parsed_path = urlparse(self.path)
+        parsed_query = parse_qs(parsed_path.query)
+        if parsed_path.path.startswith("/contactform"):                  
+            self.send_response(200)
+            self.send_header("Access-Control-Allow-Origin", "*")
+            self.end_headers()
+
+            import smtplib
+
+            content_len = int(self.headers.get("Content-Length"))
+            post_content = self.rfile.read(content_len)
+
+            gmail_user = "tipfom.pok@gmail.com"
+            gmail_password = "idiubpukwfnzthui"
+            sent_from = gmail_user
+            to = ["timpokart@outlook.de"]
+            subject = "Website Contact Form"
+            body = post_content
+
+            email_text = f"""
+            From: {sent_from}
+            To: {", ".join(to)}
+            Subject: {subject}
+            Name: {parsed_query["name"][0]}
+            E-mail: {parsed_query["mail"][0]}
+            {body.decode()}"""
+
+            try:
+                server = smtplib.SMTP_SSL("smtp.gmail.com", 465)
+                server.ehlo()
+                server.login(gmail_user, gmail_password)
+                server.sendmail(sent_from, to, email_text)
+                server.close()
+                self.wfile.write("success".encode())
+            except:
+                self.wfile.write("error".encode())
+
         else:
             self.send_response(401)
             self.end_headers()
