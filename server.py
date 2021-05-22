@@ -8,7 +8,7 @@ class ThreadedHTTPServer(ThreadingMixIn, HTTPServer):
 
 def run():
     logging.getLogger().setLevel(logging.INFO)
-    httpd = ThreadedHTTPServer(("0.0.0.0", 5764), HTTPRequestHandler)
+    httpd = ThreadedHTTPServer(("0.0.0.0", 80), HTTPRequestHandler)
     logging.info("Starting Server\n")
     try:
         httpd.serve_forever()
