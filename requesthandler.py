@@ -8,6 +8,7 @@ from http.server import BaseHTTPRequestHandler
 from urllib.parse import parse_qs, urlparse
 from datetime import datetime
 
+from passwords import gmail_password
 
 last_articles_refresh = datetime.now()
 articles_db_data = None
@@ -79,7 +80,6 @@ class HTTPRequestHandler(BaseHTTPRequestHandler):
             post_content = self.rfile.read(content_len)
 
             gmail_user = "tipfom.pok@gmail.com"
-            gmail_password = "idiubpukwfnzthui"
             sent_from = gmail_user
             to = ["timpokart@outlook.de"]
             subject = "Website Contact Form"
